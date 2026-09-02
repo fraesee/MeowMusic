@@ -40,9 +40,10 @@ A local music player built to look like an old forum. I did this for fun, whilst
 **Shift+D** - Delete selected album<br>
 
 ## Possible (future) additions:
-Ordered in priority
+Ordered in priority/how easy to add
 
 - Skip button
+- In stats, when listened hours>24, switch to days, hours and minutes
 - Bug fix with looping songs not incrementing tracks played
 - Add support of lrc files and synchronised lyrics*
 - Switch song between albums, instead of removing then re-adding
