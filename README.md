@@ -40,12 +40,14 @@ A local music player built to look like an old forum. I did this for fun, whilst
 **Shift+D** - Delete selected album<br>
 
 ## Possible (future) additions:
-- Switch song between albums, instead of removing then re-adding
-- Settings to add custom keybinds
-- Add support of Lrc files and synchronised lyrics*
-- Song editing. In its current state, if you typo'd a song you'd need to re-add it.
+Ordered in priority
+
 - Skip button
-- More stats + possible button inside the stats attachment to bring up detailed stats
 - Bug fix with looping songs not incrementing tracks played
+- Add support of lrc files and synchronised lyrics*
+- Switch song between albums, instead of removing then re-adding
+- Song editing. In its current state, if you typo'd a song you'd need to re-add it.
+- Settings ui mainly to add custom keybinds and other settings
+- More stats + possible button inside the stats attachment to bring up detailed stats
 
 *This was a original function but due to seeking, it would go off sync. Will attempt to fix as originally pulled lyrics online, not from file. Will still have plaintext lyrics if lrc file not added.
