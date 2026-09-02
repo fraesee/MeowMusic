@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+    <title>MeowMusic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-mode">
+
+    <div class="forum-wrapper">
+        <div class="top-row">
+            <nav class="breadcrumbs">
+                <a href="https://github.com/fraesee" target="_blank" rel="noopener noreferrer">Fraesee</a> > <a>Forums</a> > <b>MeowMusic</b>
+            </nav>
+            <button id="btn-theme-toggle" class="forum-btn-sm">Mode: Dark</button>
+        </div>
+
+        <div class="thread-container">
+
+
+
+
+
+
+            <div class="thread-header">
+                <span>Topic: MeowMusic - Now Live!</span>
+            </div>
+
+
+            <div class="post-layout">
+
+                <article class="post-body">
+        
+                    <aside class="author-sidebar">
+                        <a>Not_altynai101</a>
+                        <div class="user-rank">Admin</div>
+                        <div class="avatar-box">
+                            <img class="pfp-image" id="user-avatar-image" src="./images/altypfp.jpg" alt="Not_altynai101's avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="pixel-avatar" style="display:none;">[img]</div>
+                        </div>
+                        <div class="user-status">Status: Online</div>
+                        <div class="user-stats">
+                            <div>Posts: 1,753</div>
+                            <div>Rating: <span id="rating-value">4.73</span>/5</div>
+                            <div class="rating-vote" aria-label="Rate this user">
+                                <button id="btn-rating-up" class="rating-vote-btn" type="button" aria-label="Increase rating">+1</button>
+                                <button id="btn-rating-down" class="rating-vote-btn" type="button" aria-label="Decrease rating">-1</button>
+                            </div>
+                            <br>
+                            <div>Joined <b>November 12, 2005</b></div>
+                        </div>
+                    </aside>
+
+
+
+
+                    <div class="post-content">
+                        <div class="post-date">
+                            <span>Posted: December 27, 2009 at 16:12 PM</span>
+                            <span class="thread-rating" aria-label="Rate this thread">
+                                <span>Rating: <span id="thread-rating-value">765</span></span>
+                                <button id="btn-thread-up" class="thread-rating-btn" type="button" aria-label="Like this thread">+1</button>
+                                <button id="btn-thread-down" class="thread-rating-btn" type="button" aria-label="Dislike this thread">-1</button>
+                            </span>
+                        </div>
+                        <hr class="forum-divider">
+
+
+                            <!-- yk message main big one EDIT FOR FILE EMBEDS LATER -->
+                        <h2 class="post-title">Check out MeowMusic Below~</h2>
+                        
+                        
+                        
+                        
+                        <p class="post-intro">
+                        The <a href="https://github.com/fraesee/MeowMusic">GitHub</a> page, with controls and documentation.<br>
+                        The <a href="https://meowmusic.fraesee.com/">Website</a> version (doesn't support file uploading)<br><br>
+                        Enjoy! <3
+                        
+                        </p>
+                        <button type="button" id="btn-open-add-songs" class="forum-btn" hidden>Add songs</button>
+
+
+
+
+                        <div class="radio-display">
+                            <div class="track-marquee" id="song-title"></div>
+                            <div class="status-row">
+                                <span><span id="time-display">00:00</span> / <span id="duration-display">00:00</span></span>
+                                <span id="codec-display">Codec: </span>
+                                <span>Bitrate: 320kbps</span> <!-- bitrates dont really work for calculating. idk if you can "checck them"-->
+                            </div>
+                            <canvas id="visualizer"></canvas>
+                            <div class="seek-row">
+                                <label for="seek-bar">Playback position: </label>
+                                <input type="range" id="seek-bar" min="0" max="100" value="0" step="0.1">
+                            </div>
+
+
+
+
+                            <div class="controls-row">
+                                <div class="control-group">
+                                    <button id="btn-play" class="forum-btn btn-play">Play</button>
+                                    <button id="btn-pause" class="forum-btn btn-pause">Pause</button>
+                                    <button id="btn-restart" class="forum-btn btn-restart">Restart</button>
+                                </div>
+                                <div class="control-group">
+                                    <button id="btn-replay" class="forum-btn btn-replay">Replay</button>
+                                    <div id="replay-menu" class="replay-menu hidden">
+                                        <label for="replay-start">Start <input id="replay-start" type="text" value="00:00" placeholder="mm:ss"></label>
+                                        <label for="replay-end">End <input id="replay-end" type="text" value="00:00" placeholder="mm:ss"></label>
+                                    </div>
+                                    <button id="btn-shuffle" class="forum-btn btn-shuffle">Random Track</button>
+                                    <button id="btn-loop" class="forum-btn btn-loop">Loop: Off</button>
+                                </div>
+                                <div class="attachment-toggles">
+                                    <button id="btn-volume-toggle" class="forum-btn btn-volume active">Volume: On</button>
+                                    <button id="btn-lyrics-toggle" class="forum-btn btn-lyrics active">Lyrics: On</button>
+                                    <button id="btn-history-toggle" class="forum-btn btn-history active">History: On</button>
+                                    <button id="btn-stats-toggle" class="forum-btn btn-stats active">Stats: On</button>
+                                    <button id="btn-albums-toggle" class="forum-btn btn-albums active">Albums: On</button>
+                                </div>
+                            </div>
+                        </div>
+                        <audio id="audio-element" preload="metadata"></audio>
+
+ 
+
+
+    
+                        <div class="post-attachments-row">
+                            <div class="attachment-box">
+                                <div class="panel-header">
+                                    <span>Attachment: history.log</span>
+                                    <button id="btn-close-history" class="close-btn">[x]</button>
+                                </div>
+                                <div class="history-content">
+                                    <ol class="history-list" id="history-list">
+                                        <li class="history-empty">Nothing played yet!</li>
+                                    </ol>
+                                </div>
+                            </div>
+
+
+                            <div class="attachment-box">
+                                <div class="panel-header">
+                                    <span>Attachment: stats.log</span>
+                                    <button id="btn-close-stats" class="close-btn">[x]</button>
+                                </div>
+                                <div class="stats-content">
+                                    <div>Tracks played: <span id="stats-tracks-played">0</span></div>
+                                    <div class="stats-listened-row"><span>Hours & minutes listened: </span><span id="stats-listened-time">0 minutes</span></div>
+                                    <div>Unique artists listened to: <span id="stats-unique-artists">0</span></div>
+                                    <div>Most played song: <span id="stats-most-played-song">None</span></div>
+                                    <div>Most played artist: <span id="stats-most-played-artist">None</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="user-signature">
+                        <hr class="forum-divider">
+                        <span><br>Been watching Haruhi it's so goooodddd!!! I will be telling everyone about it!!1!</span>
+                    </div>
+
+                    </div>
+                </article>
+
+
+
+
+                <div class="sidebar-stack">
+                    <aside id="lyrics-panel" class="lyrics-panel">
+                        <div class="panel-header">
+                            <span>Attachment: lyrics.txt</span>
+                            <button id="btn-close-lyrics" class="close-btn">[x]</button>
+                        </div>
+                        <div class="lyrics-content">
+                            <p id="lyrics-text">Lyrics can't load if your not playing anything!!!</p>
+                        </div>
+                    </aside>
+
+
+
+
+                    <aside id="volume-panel" class="volume-panel">
+                        <div class="panel-header">
+                            <span>Attachment: volume.cfg</span>
+                            <button id="btn-close-volume" class="close-btn">[x]</button>
+                        </div>
+                        <div class="volume-content">
+                            <input type="range" id="volume-slider" min="0" max="100" value="50" step="1">
+                            <input type="number" id="volume-value" min="0" max="100" value="50" aria-label="Volume percentage">%
+                        </div>
+                    </aside>
+                </div>
+
+            </div>
+
+
+
+            
+            <div class="post-layout reply-layout">
+            <article class="post-body reply-post">
+                <aside class="author-sidebar">
+                    <a>Not_altynai101</a>
+                    <div class="user-rank">Admin</div>
+                    <div class="avatar-box">
+                        <img class="pfp-image" src="./images/altypfp.jpg" alt="Not_altynai101's avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="pixel-avatar" style="display:none;">[img]</div>
+                    </div>
+                    <div class="user-status">Status: Online</div>
+                    <div class="user-stats">
+                        <div>Posts: 1,753</div>
+                        <div>Rating: <span class="rating-value-secondary">4.73</span>/5</div>
+                        <div class="rating-vote" aria-label="Rate this user">
+                            <button class="rating-vote-btn" type="button" aria-label="Increase rating">+1</button>
+                            <button class="rating-vote-btn" type="button" aria-label="Decrease rating">-1</button>
+                        </div>
+                        <br>
+                        <div>Joined <b>November 12, 2005</b></div>
+                    </div>
+                </aside>
+                <div class="post-content">
+                    <div class="post-date">
+                        <span>Posted: January 2, 2010 at 19:26 PM</span>
+                    </div>
+                    <hr class="forum-divider">
+                    <p class="post-intro">Took a while.... but added "Albums", check them out!</p>
+                    <div class="album-playlist-heading">
+                        <div>
+                            <strong id="selected-album-title">Album songs</strong>
+                            <button id="btn-rename-album" class="forum-btn-sm" type="button">Rename</button>
+                            <div class="album-heading-controls">
+                                <button id="btn-play-album" class="album-play-btn" type="button">Play</button>
+                                <button id="btn-loop-album" class="album-loop-btn" type="button">Loop Album: Off</button>
+                            </div>
+                        </div>
+                        <span>Drag songs to reorder them!</span>
+                    </div>
+                    <div id="album-rename-row" class="album-rename-row hidden">
+                        <input id="album-rename-input" type="text" maxlength="80" placeholder="Album name">
+                        <button id="btn-save-album-rename" class="forum-btn-sm" type="button">Save</button>
+                        <button id="btn-cancel-album-rename" class="forum-btn-sm" type="button">Cancel</button>
+                    </div>
+                    <ul id="album-playlist-list" class="album-song-list album-playlist-list" aria-label="Selected album songs"></ul>
+                </div>
+
+
+
+<!-- LIGHJTENER SON -->
+
+
+            </article>
+                <div class="sidebar-stack album-sidebar">
+                    <div id="album-attachment" class="attachment-box album-attachment">
+                        <div class="panel-header">
+                            <span>Attachment: album.cfg</span>
+                            <button id="btn-close-album" class="close-btn" type="button">[x]</button>
+                        </div>
+                        <div class="album-content">
+                            <strong class="album-management-heading">Album management</strong>
+                            <div id="album-management">
+                                <div class="album-create-row">
+                                    <label for="album-name">New album</label>
+                                    <input id="album-name" type="text" maxlength="80" placeholder="Album name">
+                                    <button id="btn-create-album" class="forum-btn" type="button">Create</button>
+                                </div>
+                                <div class="album-selection-row">
+                                    <label for="album-select">Selected album</label>
+                                    <select id="album-select"></select>
+                                    <button id="btn-delete-album" class="forum-btn-sm" type="button">Delete album</button>
+                                </div>
+                                <div class="album-sort-row">
+                                    <strong>Available songs</strong>
+                                    <label for="album-song-sort">Sort by</label>
+                                    <select id="album-song-sort">
+                                        <option value="artist">Artist</option>
+                                        <option value="title">Song name</option>
+                                    </select>
+                                    <button id="btn-select-all-songs" class="forum-btn-sm" type="button">Select all</button>
+                                    <button id="btn-clear-song-selection" class="forum-btn-sm" type="button">Clear</button>
+                                </div>
+                                <input id="album-song-search" class="album-song-search" type="search" placeholder="Search songs or artists" aria-label="Search available songs">
+                                <ul id="available-songs-list" class="album-song-list" aria-label="Available songs"></ul>
+                                <button id="btn-add-selected-songs" class="forum-btn" type="button">Add selected songs</button>
+                                <span id="album-action-status" class="album-action-status" aria-live="polite"></span>
+                            </div>
+                        </div>
+                        <div id="delete-album-dialog" class="album-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-album-title" hidden>
+                            <div class="album-dialog-backdrop"></div>
+                            <div class="album-dialog-window">
+                                <strong id="delete-album-title">Delete album?</strong>
+                                <p id="delete-album-message"></p>
+                                <div class="album-dialog-actions">
+                                    <button id="btn-cancel-delete-album" class="forum-btn-sm" type="button">Cancel</button>
+                                    <button id="btn-confirm-delete-album" class="forum-btn-sm album-danger-btn" type="button">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="delete-song-dialog" class="album-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-song-title" hidden>
+                            <div class="album-dialog-backdrop"></div>
+                            <div class="album-dialog-window">
+                                <strong id="delete-song-title">Delete song?</strong>
+                                <p id="delete-song-message"></p>
+                                <div class="album-dialog-actions">
+                                    <button id="btn-cancel-delete-song" class="forum-btn-sm" type="button">Cancel</button>
+                                    <button id="btn-confirm-delete-song" class="forum-btn-sm album-danger-btn" type="button">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+    <script src="import.js"></script>
+    <script src="nowplaying.js"></script>
+</body>
+</html>

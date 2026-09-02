@@ -1,0 +1,1523 @@
+body, body.light-mode {
+    --bg-color: #e5e7eb;
+    --text-color: #1f2937;
+    --link-color: #1d4ed8;
+    --border-color: #9ca3af;
+    --panel-bg: #ffffff;
+    --header-bg: #d1d5db;
+    --header-text: #111827;
+    --accent-color: #2563eb;
+    --screen-bg: #f8fafc;
+    --screen-border: #3b82f6;
+    --screen-text: #334155;
+    --canvas-bg: #ffffff;
+    --canvas-bar: #2563eb;
+    --lyrics-bg: #ffffff;
+    --lyrics-border: #6b7280;
+    --channel-label: #1f2937;
+    --author-subtext: #475569;
+    --author-panel-bg: #d1d5db;
+    --post-separator: #64748b;
+    
+    --thread-header-bg: #2a384c;       
+    --thread-header-text: #f1f5f9;     
+    --thread-header-border: #2563eb;   
+}
+body.dark-mode {
+    --bg-color: #0f172a;
+    --text-color: #f8fafc;
+    --link-color: #60a5fa;
+    --border-color: #334155;
+    --panel-bg: #1e293b;
+    --header-bg: #334155;
+    --header-text: #ffffff;
+    --accent-color: #2563eb;
+    --screen-bg: #0b1329;
+    --screen-border: #3b82f6;
+    --screen-text: #cbd5e1;
+    --canvas-bg: #030712;
+    --canvas-bar: #3b82f6;
+    --lyrics-bg: #1e293b;
+    --lyrics-border: #475569;
+    --author-subtext: #cbd5e1;
+    --channel-label: #f8fafc;
+    --author-panel-bg: #273449;
+    --post-separator: #64748b;
+    
+    --thread-header-bg: #182234;       
+    --thread-header-text: #38bdf8;     
+    --thread-header-border: #3b82f6;   
+}
+
+* {
+    box-sizing: border-box;
+    border-radius: 0 !important;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: clamp(13px, 0.25vw + 10px, 16px);
+    line-height: 1.5;
+    margin: 0;
+    padding: clamp(12px, 1.5vw, 28px);
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+.forum-wrapper {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.breadcrumbs {
+    font-size: clamp(11px, 0.15vw + 9px, 13px);
+}
+
+.thread-container {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.thread-header {
+    background-color: var(--thread-header-bg);
+    color: var(--thread-header-text);
+    font-weight: 600;
+    font-size: clamp(13px, 0.2vw + 10px, 16px);
+    padding: clamp(10px, 0.7vw, 16px) clamp(14px, 1vw, 22px);
+    border-bottom: 2px solid var(--thread-header-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    position: relative;
+}
+
+.post-body {
+    flex: 2;
+    display: flex;
+    flex-direction: row;
+    border-right: 1px solid var(--border-color);
+}
+
+.reply-post {
+    width: 100%;
+    border-top: 4px solid var(--border-color);
+    border-right: 0;
+}
+
+.reply-layout {
+    border-top: 4px solid var(--post-separator);
+}
+
+.reply-layout .reply-post {
+    border-top: 0;
+}
+
+.album-sidebar {
+    flex: 1.35;
+    min-width: 360px;
+}
+
+.author-sidebar {
+    width: clamp(200px, 15vw, 260px);
+    background-color: var(--author-panel-bg);
+    border-right: 1px solid var(--border-color);
+    padding: 16px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.author-name {
+    font-weight: 600;
+    font-size: 15px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.rating-vote {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin-bottom: 6px;
+}
+
+.rating-vote-btn {
+    width: 22px;
+    height: 20px;
+    padding: 0;
+    background-color: var(--panel-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font-size: 12px;
+    line-height: 18px;
+    cursor: pointer;
+}
+
+.rating-vote-btn:hover:not(:disabled) {
+    background-color: var(--accent-color);
+    color: #ffffff;
+}
+
+.rating-vote-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.user-rank {
+    font-size: 12px;
+    color: var(--author-subtext);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.avatar-box {
+    width: 112px;
+    height: 112px;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    margin: 0 auto 8px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.pfp-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.pixel-avatar {
+    font-size: 13px;
+    color: #94a3b8;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.user-stats {
+    font-size: 12px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.post-content {
+    flex: 1;
+    padding: clamp(16px, 1.5vw, 26px);
+}
+
+.post-date {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--author-subtext);
+    font-weight: 500;
+}
+
+.thread-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.thread-rating-btn {
+    padding: 1px 4px;
+    background-color: var(--panel-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font-family: inherit;
+    font-size: 10px;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.thread-rating-btn:hover:not(:disabled) {
+    background-color: var(--accent-color);
+    color: #ffffff;
+}
+
+.thread-rating-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.forum-divider {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 8px 0 12px 0;
+}
+
+.user-status {
+    font-size: 12px;
+    color: var(--author-subtext);
+    margin-bottom: 8px;
+}
+
+.post-title {
+    margin: 0 0 6px 0;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.post-intro {
+    margin: 0 0 12px 0;
+}
+
+.radio-display {
+    background-color: var(--screen-bg);
+    border: 1px solid var(--screen-border);
+    color: var(--screen-text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    padding: 14px;
+    margin-bottom: 12px;
+    width: 100%;
+    box-shadow: none;
+}
+
+audio {
+    display: none;
+}
+
+.track-marquee {
+    border: 1px solid var(--border-color);
+    background-color: rgba(15, 23, 42, 0.05);
+    padding: 6px 10px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.2px;
+}
+
+.artist-link:hover {
+    color: var(--accent-color);
+}
+
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    opacity: 0.85;
+}
+
+canvas {
+    background-color: var(--canvas-bg);
+    border: 1px solid var(--border-color);
+    display: block;
+    width: 100%;
+    height: 220px;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background-color: var(--screen-bg);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 16px;
+    background-color: var(--accent-color);
+    border: 1px solid var(--screen-border);
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 12px;
+    height: 16px;
+    background-color: var(--accent-color);
+    border: 1px solid var(--screen-border);
+    cursor: pointer;
+}
+
+.seek-row {
+    margin-top: 8px;
+}
+
+.seek-row label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--screen-text);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+
+
+.controls-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    max-width: none;
+    flex-wrap: wrap;
+}
+
+.forum-btn {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    border: 1px solid var(--border-color);
+    padding: 6px 14px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.forum-btn:hover, .forum-btn-sm:hover {
+    background-color: var(--border-color);
+}
+
+.controls-row {
+    position: relative;
+}
+
+.replay-menu {
+    position: absolute;
+    top: 100%;
+    z-index: 3;
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 11px;
+}
+
+.replay-menu.hidden {
+    display: none;
+}
+
+.replay-menu label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.replay-menu input {
+    width: 52px;
+    padding: 3px;
+    background-color: var(--screen-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font: inherit;
+}
+
+.forum-btn.btn-replay.active {
+    background-color: #1d4ed8;
+    color: #ffffff;
+    border-color: #60a5fa;
+}
+
+
+.radio-display .controls-row {
+    justify-content: center;
+    margin-top: 14px;
+    margin-bottom: 0;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 10px;
+    border-left: 1px solid var(--border-color);
+}
+
+.control-group:first-child {
+    padding-left: 0;
+    border-left: none;
+}
+
+.attachment-toggles-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--screen-text);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-right: 2px;
+}
+
+.attachment-toggles {
+    flex-basis: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-top: 10px;
+    margin-top: 4px;
+    border-top: 1px solid var(--border-color);
+}
+.post-attachments-row {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 14px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.attachment-box {
+    flex: 1 1 240px;
+    min-width: 220px;
+    background-color: var(--lyrics-bg);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.attachment-box.hidden {
+    display: none;
+}
+
+.post-body.attachments-empty .user-signature .forum-divider {
+    display: none;
+}
+
+.post-body.attachments-empty .post-attachments-row {
+    margin-bottom: 0;
+}
+
+.post-layout.lyrics-closed .post-attachments-row {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 60%;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    display: block;
+    z-index: 4;
+}
+
+.post-layout.lyrics-closed .post-attachments-row .attachment-box {
+    flex: 0 0 auto;
+    width: 100%;
+    margin: 0;
+}
+
+.post-layout.lyrics-closed .post-attachments-row .attachment-box + .attachment-box {
+    margin-top: 4px;
+    border-top: 1px solid var(--border-color);
+}
+
+.history-content {
+    padding: 14px;
+}
+
+.stats-content {
+    padding: 14px;
+    font-size: 11px;
+    color: var(--screen-text);
+    line-height: 1.6;
+}
+
+.stats-listened-row {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+}
+
+.stats-listened-row::after {
+    content: attr(data-total-minutes);
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 5;
+    display: none;
+    padding: 3px 6px;
+    background-color: var(--header-bg);
+    border: 1px solid var(--border-color);
+    color: var(--header-text);
+    white-space: nowrap;
+}
+
+.stats-listened-row:hover::after {
+    display: block;
+}
+
+.stats-placeholder {
+    margin: 0;
+    font-size: 12px;
+    color: var(--author-subtext);
+}
+
+.history-list {
+    list-style: decimal;
+    margin: 0;
+    padding-left: 20px;
+    font-size: 11px;
+    color: var(--screen-text);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.history-list li {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.history-track-link {
+    max-width: 100%;
+    overflow: hidden;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--screen-text);
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.history-track-link:hover {
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+.history-list li.history-empty {
+    list-style: none;
+    margin-left: -20px;
+    opacity: 0.7;
+}
+
+.forum-btn-sm {
+    background-color: var(--panel-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 2px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.forum-btn.btn-lyrics.active,
+.forum-btn.btn-history.active,
+.forum-btn.btn-stats.active,
+.forum-btn.btn-albums.active {
+    background-color: #1d4ed8;
+    color: #ffffff;
+    border: 1px solid #60a5fa;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+.forum-btn.btn-lyrics.active:hover,
+.forum-btn.btn-history.active:hover,
+.forum-btn.btn-stats.active:hover,
+.forum-btn.btn-albums.active:hover {
+    background-color: var(--screen-border);
+    box-shadow: none;
+    text-shadow: none;
+}
+
+.forum-btn.btn-loop.active {
+    background-color: #1d4ed8;
+    color: #ffffff;
+    border-color: #60a5fa;
+}
+
+.forum-btn.btn-volume.active {
+    background-color: #1d4ed8;
+    color: #ffffff;
+    border: 1px solid #60a5fa;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+.forum-btn.btn-volume.active:hover {
+    background-color: var(--screen-border);
+    box-shadow: none;
+    text-shadow: none;
+}
+
+.sidebar-stack {
+    flex: 1.35;
+    min-width: 360px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    position: relative;
+}
+
+.lyrics-panel {
+    flex: 1 1 0;
+    height: auto;
+    min-height: 0;
+    background-color: var(--lyrics-bg);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.lyrics-panel.hidden {
+    display: none;
+}
+
+.panel-header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    padding: clamp(8px, 0.6vw, 12px) clamp(12px, 0.8vw, 18px);
+    font-weight: 600;
+    font-size: clamp(11px, 0.15vw + 9px, 13px);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.lyrics-content {
+    padding: 14px 14px 78px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
+    min-height: 0;
+}
+
+.lyric-line {
+    display: flex;
+    align-items: flex-start;
+    padding: 2px 0;
+}
+
+.lyric-text {
+    flex: 1;
+}
+
+.volume-panel {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    background-color: var(--lyrics-bg);
+    border-left: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.volume-panel.hidden {
+    display: none;
+}
+
+.volume-content {
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.volume-content input[type="range"] {
+    flex: 1;
+    height: 12px;
+}
+
+.volume-content input[type="range"]::-webkit-slider-thumb {
+    width: 16px;
+    height: 22px;
+}
+
+.volume-content input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 22px;
+}
+
+#volume-value {
+    font-size: 11px;
+    width: 34px;
+    text-align: right;
+    flex-shrink: 0;
+    padding: 2px;
+    background-color: var(--screen-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+#volume-value::-webkit-inner-spin-button,
+#volume-value::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+}
+
+#volume-value {
+    -moz-appearance: textfield;
+}
+
+.user-signature {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+
+.album-track-number {
+    flex: 0 0 24px;
+    color: var(--author-subtext);
+    text-align: right;
+}
+
+.album-attachment.hidden {
+    display: none;
+}
+
+.album-content {
+    padding: 20px;
+    color: var(--screen-text);
+    font-size: 13px;
+}
+
+.album-management-heading {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.album-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+}
+
+.album-dialog[hidden] {
+    display: none !important;
+}
+
+.album-dialog-backdrop {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.58);
+}
+
+.album-dialog-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(420px, calc(100vw - 32px));
+    transform: translate(-50%, -50%);
+    padding: 18px;
+    border: 2px solid var(--screen-border);
+    background-color: var(--panel-bg);
+    color: var(--text-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.album-dialog p {
+    margin: 6px 0 10px;
+}
+
+.album-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.album-danger-btn {
+    background-color: var(--accent-color);
+    color: #ffffff;
+}
+
+.album-create-row,
+.album-selection-row,
+.album-sort-row,
+.album-playlist-heading,
+.album-rename-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.album-rename-row.hidden {
+    display: none;
+}
+
+.album-rename-row input {
+    flex: 1 1 160px;
+    min-width: 120px;
+    padding: 4px 6px;
+    background-color: var(--screen-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font: inherit;
+}
+
+.album-cover-display {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    border: 1px solid var(--border-color);
+}
+
+.album-cover-display.hidden {
+    display: none;
+}
+
+.album-create-row input,
+.album-selection-row select,
+.album-sort-row select {
+    min-width: 120px;
+    padding: 4px 6px;
+    background-color: var(--screen-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font: inherit;
+}
+
+.album-create-row input {
+    flex: 1 1 160px;
+}
+
+.album-selection-row select {
+    flex: 1 1 150px;
+}
+
+.album-picture-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.file-upload {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.upload-control,
+.album-picture-upload {
+    display: inline-block;
+    padding: 3px 7px;
+    border: 1px solid var(--border-color);
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.upload-control {
+    margin-bottom: 8px;
+}
+
+.album-picture-preview {
+    width: 104px;
+    height: 104px;
+    margin: 0;
+    border: 1px solid var(--border-color);
+    background-color: var(--screen-bg);
+    background-position: center;
+    background-size: cover;
+}
+
+.album-picture-preview:empty::after {
+    content: "No picture";
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    color: var(--author-subtext);
+    font-size: 10px;
+}
+
+.album-picture-preview.has-picture::after {
+    display: none;
+}
+
+.album-song-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px;
+    border: 1px solid var(--border-color);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.album-song-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 12px;
+}
+
+.album-song-list .album-song-item:nth-child(even) {
+    background-color: var(--screen-bg);
+}
+
+.album-song-list .album-song-item:nth-child(odd) {
+    background-color: var(--lyrics-bg);
+}
+
+.album-song-search {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+    padding: 5px 7px;
+    background-color: var(--screen-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font: inherit;
+}
+
+.album-action-status {
+    display: inline-block;
+    margin-left: 8px;
+    color: var(--author-subtext);
+    font-size: 11px;
+}
+
+.album-song-item:last-child {
+    border-bottom: 0;
+}
+
+.album-song-item label {
+    flex: 1;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.album-track-link {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--screen-text);
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.album-track-link:hover {
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+.album-song-play,
+.album-song-delete {
+    flex: 0 0 auto;
+}
+
+.album-remove-song {
+    padding: 0 3px;
+    border: 0;
+    background: none;
+    color: var(--author-subtext);
+    cursor: pointer;
+    font: inherit;
+    font-size: 10px;
+}
+
+.album-remove-song:hover {
+    color: var(--link-color);
+}
+
+.album-playlist-list .album-song-item {
+    cursor: grab;
+}
+
+.album-playlist-list .album-song-item:active {
+    cursor: grabbing;
+}
+
+.album-playlist-heading {
+    justify-content: space-between;
+    margin-top: 14px;
+}
+
+.album-playlist-heading span {
+    color: var(--author-subtext);
+    font-size: 10px;
+}
+
+.album-playlist-heading strong {
+    display: block;
+    text-decoration: underline;
+}
+
+.album-heading-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.album-play-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.album-play-btn:hover:not(:disabled) {
+    background-color: var(--link-color);
+}
+
+.album-play-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.album-loop-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border: 1px solid var(--border-color);
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.album-loop-btn:hover {
+    background-color: var(--link-color);
+}
+
+.album-loop-btn.active {
+    background-color: #1d4ed8;
+    color: #ffffff;
+    border-color: #60a5fa;
+}
+
+.album-empty {
+    padding: 8px;
+    color: var(--author-subtext);
+    font-size: 11px;
+}
+
+
+.message-compose {
+    padding: 12px;
+}
+
+.compose-toolbar {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.compose-toolbar .forum-btn-sm {
+    cursor: not-allowed;
+    opacity: 0.55;
+    width: 26px;
+    text-align: center;
+}
+
+.compose-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    padding: 8px;
+    background-color: var(--screen-bg);
+    color: var(--author-subtext);
+    border: 1px solid var(--border-color);
+    font: inherit;
+    font-size: 12px;
+    cursor: not-allowed;
+}
+
+.compose-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.compose-note {
+    font-size: 11px;
+    color: var(--author-subtext);
+}
+
+.compose-footer .forum-btn {
+    cursor: not-allowed;
+    opacity: 0.55;
+    flex-shrink: 0;
+}
+.message-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.message-item {
+    display: flex;
+    gap: 10px;
+    padding: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.message-item:first-child {
+    border-top: none;
+}
+
+.message-item:nth-child(even) {
+    background-color: var(--screen-bg);
+}
+
+.message-avatar {
+    flex-shrink: 0;
+}
+
+.pixel-avatar-sm {
+    width: 34px;
+    height: 34px;
+    background-color: var(--author-panel-bg);
+    border: 1px solid var(--border-color);
+    color: var(--author-subtext);
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.message-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.message-meta {
+    font-size: 12px;
+    margin-bottom: 3px;
+}
+
+.message-author {
+    font-weight: 600;
+}
+
+.message-time {
+    color: var(--author-subtext);
+    font-size: 11px;
+    margin-left: 4px;
+}
+
+.message-text {
+    margin: 0 0 4px 0;
+    font-size: 12px;
+}
+
+.message-actions {
+    font-size: 11px;
+}
+
+.message-action-disabled {
+    color: var(--author-subtext);
+    text-decoration: none;
+    cursor: not-allowed;
+}
+
+.message-lock-note {
+    padding: 10px 12px;
+    font-size: 11px;
+    color: var(--author-subtext);
+    background-color: var(--screen-bg);
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.friends-grid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.friend-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    width: 60px;
+    text-align: center;
+}
+
+.friend-item .pixel-avatar-sm {
+    width: 44px;
+    height: 44px;
+}
+
+.album-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.album-preview .album-cover {
+    width: 48px;
+    height: 48px;
+}
+
+.album-preview-title {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.album-preview-time {
+    font-size: 11px;
+    color: var(--author-subtext);
+}
+
+.visitors-list {
+    font-size: 12px;
+}
+
+.profile-back-container {
+    margin-top: 12px;
+}
+
+@media (max-width: 760px) {
+    .profile-columns {
+        flex-direction: column;
+    }
+
+    .profile-main-col {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .compose-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .now-playing-widget {
+        right: 10px;
+        left: 10px;
+        bottom: 10px;
+        width: auto;
+    }
+
+    .now-playing-reopen {
+        right: 10px;
+        bottom: 10px;
+    }
+}
+
+.song-drop-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.55);
+    border: 3px dashed var(--screen-border);
+}
+
+.song-drop-overlay.hidden {
+    display: none;
+}
+
+.song-drop-message {
+    padding: 18px 28px;
+    background-color: var(--panel-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.empty-library-notice {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background-color: var(--panel-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font-size: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    max-width: min(520px, calc(100vw - 32px));
+}
+
+.empty-library-notice.hidden {
+    display: none;
+}
+
+.import-songs-dialog .album-dialog-window {
+    width: min(640px, calc(100vw - 32px));
+}
+
+.import-album-toggle-row {
+    margin: 4px 0 10px;
+    font-size: 13px;
+}
+
+.import-album-fields {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.import-album-fields.hidden {
+    display: none;
+}
+
+.import-album-fields input[type="text"] {
+    flex: 1 1 200px;
+    min-width: 120px;
+    padding: 4px 6px;
+    background-color: var(--screen-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font: inherit;
+}
+
+.import-cover-name {
+    font-size: 11px;
+    color: var(--author-subtext);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 160px;
+}
+
+.import-reorder-hint {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: var(--author-subtext);
+}
+
+.import-reorder-hint.hidden {
+    display: none;
+}
+
+.import-song-list {
+    max-height: 320px;
+}
+
+.import-song-item {
+    flex-wrap: wrap;
+}
+
+.import-drag-handle,
+.import-cover-btn {
+    flex: 0 0 auto;
+}
+
+.import-drag-handle {
+    cursor: grab;
+    color: var(--author-subtext);
+}
+
+.import-song-item[draggable="true"] {
+    cursor: grab;
+}
+
+.import-song-item[draggable="true"]:active {
+    cursor: grabbing;
+}
+
+.import-original-filename {
+    flex: 1 1 140px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--author-subtext);
+    font-size: 11px;
+}
+
+.import-title-input,
+.import-artist-input {
+    flex: 1 1 140px;
+    min-width: 100px;
+    padding: 4px 6px;
+    background-color: var(--screen-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font: inherit;
+    font-size: 12px;
+}
+
+#btn-open-add-songs {
+    padding: 10px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 4px 0 6px;
+}
