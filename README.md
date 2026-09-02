@@ -25,8 +25,8 @@ A local music player built to look like an old forum. I did this for fun, whilst
 
 <br>**The directions are arrow keys**<br>
 
-**Shift+Left** - Seek -5 seconds<br>
-**Shift+Right** - Seek +5 seconds<br>
+**Left** - Seek -5 seconds<br>
+**Right** - Seek +5 seconds<br>
 **Alt+Left** - Seek -10 seconds<br>
 **Alt+Right** - Seek +10 seconds<br>
 
