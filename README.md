@@ -46,6 +46,7 @@ Ordered in priority/how easy to add
 - In stats, when listened hours>24, switch to days, hours and minutes
 - Bug fix with looping songs not incrementing tracks played
 - Add support of lrc files and synchronised lyrics*
+- When adding a song/artist, add a second menu which allows for users to add artist links, as currently simply searching their name on spotify
 - Switch song between albums, instead of removing then re-adding
 - Song editing. In its current state, if you typo'd a song you'd need to re-add it.
 - Settings ui mainly to add custom keybinds and other settings
