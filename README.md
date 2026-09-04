@@ -5,6 +5,23 @@ A local music player built to look like an old forum. I did this for fun, whilst
 ## Image showcase:
 <img width="550" height="450" alt="{F60E2CC4-400A-41BB-8A90-772FF2CC0221}" src="https://github.com/user-attachments/assets/65d0fddb-4ae7-4e82-ac6a-0d10784a2c1e" />
 
+## Image/Song file extension support:
+### Audio
+- .MP3<br>
+- .WAV<br>
+- .OGG<br>
+- .FLAC<br>
+- .M4A<br>
+- .AAC<br>
+- .WMA<br>
+- .OPUS<br>
+
+### Images
+- .JPG/JPEG<br>
+- .PNG<br>
+- .GIF<br>
+- .WebP<br>
+- .SVG<br>
 
 ## Controls:
 
@@ -42,14 +59,9 @@ A local music player built to look like an old forum. I did this for fun, whilst
 ## Possible (future) additions:
 Ordered in priority/how easy to add
 
-- Skip button
-- In stats, when listened hours>24, switch to days, hours and minutes
-- Bug fix with looping songs not incrementing tracks played
 - Add support of lrc files and synchronised lyrics*
 - When adding a song/artist, add a second menu which allows for users to add artist links, as currently simply searching their name on spotify
 - Switch song between albums, instead of removing then re-adding
-- Song editing. In its current state, if you typo'd a song you'd need to re-add it.
-- Settings ui mainly to add custom keybinds and other settings
 - More stats + possible button inside the stats attachment to bring up detailed stats
 
 *This was a original function but due to seeking, it would go off sync. Will attempt to fix as originally pulled lyrics online, not from file. Will still have plaintext lyrics if lrc file not added.
