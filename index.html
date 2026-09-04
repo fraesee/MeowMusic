@@ -41,7 +41,7 @@
                         <div class="user-rank">Admin</div>
                         <div class="avatar-box">
                             <img class="pfp-image" id="user-avatar-image" src="./images/altypfp.jpg" alt="Not_altynai101's avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="pixel-avatar" style="display:none;">[img]</div>
+                            <div class="pixel-avatar">[img]</div>
                         </div>
                         <div class="user-status">Status: Online</div>
                         <div class="user-stats">
@@ -71,17 +71,14 @@
                         <hr class="forum-divider">
 
 
-                            <!-- yk message main big one EDIT FOR FILE EMBEDS LATER -->
                         <h2 class="post-title">Check out MeowMusic Below~</h2>
                         
                         
                         
                         
                         <p class="post-intro">
-                        The <a href="https://github.com/fraesee/MeowMusic">GitHub</a> page, with controls and documentation.<br>
-                        The <a href="https://meowmusic.fraesee.com/">Website</a> version (doesn't support file uploading)<br><br>
+                        The <a href="https://github.com/fraesee/MeowMusic">GitHub</a> page, with controls and documentation.<br><br>
                         Enjoy! <3
-                        
                         </p>
                         <button type="button" id="btn-open-add-songs" class="forum-btn" hidden>Add songs</button>
 
@@ -93,7 +90,7 @@
                             <div class="status-row">
                                 <span><span id="time-display">00:00</span> / <span id="duration-display">00:00</span></span>
                                 <span id="codec-display">Codec: </span>
-                                <span>Bitrate: 320kbps</span> <!-- bitrates dont really work for calculating. idk if you can "checck them"-->
+                                <span>Bitrate: 320kbps</span>
                             </div>
                             <canvas id="visualizer"></canvas>
                             <div class="seek-row">
@@ -212,7 +209,7 @@
                     <div class="user-rank">Admin</div>
                     <div class="avatar-box">
                         <img class="pfp-image" src="./images/altypfp.jpg" alt="Not_altynai101's avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="pixel-avatar" style="display:none;">[img]</div>
+                        <div class="pixel-avatar">[img]</div>
                     </div>
                     <div class="user-status">Status: Online</div>
                     <div class="user-stats">
@@ -233,15 +230,26 @@
                     <hr class="forum-divider">
                     <p class="post-intro">Took a while.... but added "Albums", check them out!</p>
                     <div class="album-playlist-heading">
-                        <div>
-                            <strong id="selected-album-title">Album songs</strong>
-                            <button id="btn-rename-album" class="forum-btn-sm" type="button">Rename</button>
-                            <div class="album-heading-controls">
-                                <button id="btn-play-album" class="album-play-btn" type="button">Play</button>
-                                <button id="btn-loop-album" class="album-loop-btn" type="button">Loop Album: Off</button>
+                        <div id="album-hero" class="album-hero">
+                            <div class="album-hero-cover">
+                                <img id="album-cover-image" class="album-cover-img hidden" alt="">
+                                <span id="album-cover-placeholder" class="album-cover-placeholder">♪</span>
+                                <button id="btn-change-album-cover" class="album-cover-edit-btn" type="button" title="Change album cover">Edit cover</button>
+                            </div>
+                            <div class="album-hero-info">
+                                <span class="album-hero-kicker">Playlist</span>
+                                <div class="album-title-row">
+                                    <strong id="selected-album-title" class="album-hero-title">Album songs</strong>
+                                    <button id="btn-rename-album" class="forum-btn-sm" type="button">Rename</button>
+                                </div>
+                                <span id="album-hero-meta" class="album-hero-meta"></span>
+                                <div class="album-heading-controls">
+                                    <button id="btn-play-album" class="album-play-btn" type="button">Play</button>
+                                    <button id="btn-loop-album" class="album-loop-btn" type="button">Loop Album: Off</button>
+                                </div>
                             </div>
                         </div>
-                        <span>Drag songs to reorder them!</span>
+                        <span>Drag tracks to reorder them!! Click a track to change its cover as well :3</span>
                     </div>
                     <div id="album-rename-row" class="album-rename-row hidden">
                         <input id="album-rename-input" type="text" maxlength="80" placeholder="Album name">
@@ -253,9 +261,6 @@
 
 
 
-<!-- LIGHJTENER SON -->
-
-
             </article>
                 <div class="sidebar-stack album-sidebar">
                     <div id="album-attachment" class="attachment-box album-attachment">
@@ -264,7 +269,6 @@
                             <button id="btn-close-album" class="close-btn" type="button">[x]</button>
                         </div>
                         <div class="album-content">
-                            <strong class="album-management-heading">Album management</strong>
                             <div id="album-management">
                                 <div class="album-create-row">
                                     <label for="album-name">New album</label>
@@ -277,7 +281,6 @@
                                     <button id="btn-delete-album" class="forum-btn-sm" type="button">Delete album</button>
                                 </div>
                                 <div class="album-sort-row">
-                                    <strong>Available songs</strong>
                                     <label for="album-song-sort">Sort by</label>
                                     <select id="album-song-sort">
                                         <option value="artist">Artist</option>
@@ -322,8 +325,18 @@
 
     </div>
 
+    <button id="btn-hud-settings" class="forum-btn hud-fab" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="hud-settings-panel" title="Settings">⚙</button>
+    <div id="hud-settings-panel" class="hud-panel hidden" role="menu" aria-label="Quick settings">
+        <div class="hud-panel-title">Settings</div>
+        <button id="hud-theme-btn" class="forum-btn-sm hud-panel-item" type="button" role="menuitem"></button>
+        <button id="hud-volume-btn" class="forum-btn-sm hud-panel-item" type="button" role="menuitem"></button>
+        <button id="hud-lyrics-btn" class="forum-btn-sm hud-panel-item" type="button" role="menuitem"></button>
+        <button id="hud-history-btn" class="forum-btn-sm hud-panel-item" type="button" role="menuitem"></button>
+        <button id="hud-stats-btn" class="forum-btn-sm hud-panel-item" type="button" role="menuitem"></button>
+        <button id="hud-albums-btn" class="forum-btn-sm hud-panel-item" type="button" role="menuitem"></button>
+    </div>
+
     <script src="script.js"></script>
     <script src="import.js"></script>
-    <script src="nowplaying.js"></script>
 </body>
 </html>

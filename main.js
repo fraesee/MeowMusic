@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const fssync = require('fs');
 const { Client: DiscordRPC } = require('@xhayper/discord-rpc');
+const { parseFile } = require('music-metadata');
 
 if (require('electron-squirrel-startup')) app.quit();
 
@@ -44,7 +45,8 @@ function getlibrarypaths() {
     const songsdir = path.join(musicdir, 'songs');
     const imagesdir = path.join(musicdir, 'images');
     const playlistpath = path.join(musicdir, 'playlist.json');
-    return { musicdir, songsdir, imagesdir, playlistpath };
+    const albumspath = path.join(musicdir, 'albums.json');
+    return { musicdir, songsdir, imagesdir, playlistpath, albumspath };
 }
 
 async function ensurelibraryfolders() {
@@ -55,6 +57,11 @@ async function ensurelibraryfolders() {
         await fs.access(librarypaths.playlistpath);
     } catch {
         await fs.writeFile(librarypaths.playlistpath, '[]', 'utf-8');
+    }
+    try {
+        await fs.access(librarypaths.albumspath);
+    } catch {
+        await fs.writeFile(librarypaths.albumspath, '[]', 'utf-8');
     }
     return librarypaths;
 }
@@ -205,6 +212,29 @@ ipcMain.handle('meow:write-playlist', async (event, playlist) => {
     }
 });
 
+ipcMain.handle('meow:read-albums', async () => {
+    const librarypaths = await ensurelibraryfolders();
+    try {
+        const raw = await fs.readFile(librarypaths.albumspath, 'utf-8');
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+        console.error("Couldn't read albums.json:", err);
+        return [];
+    }
+});
+
+ipcMain.handle('meow:write-albums', async (event, albums) => {
+    const librarypaths = await ensurelibraryfolders();
+    try {
+        await fs.writeFile(librarypaths.albumspath, JSON.stringify(albums, null, 2), 'utf-8');
+        return true;
+    } catch (err) {
+        console.error("Couldn't write albums.json:", err);
+        return false;
+    }
+});
+
 ipcMain.handle('meow:import-songs', async (event, filepaths) => {
     const librarypaths = await ensurelibraryfolders();
     const imported = [];
@@ -232,11 +262,24 @@ ipcMain.handle('meow:pick-songs', async () => {
     return result.filePaths;
 });
 
+ipcMain.handle('meow:read-song-metadata', async (event, filepath) => {
+    try {
+        const metadata = await parseFile(filepath, { skipCovers: true });
+        return {
+            title: metadata.common.title || null,
+            artist: metadata.common.artist || null
+        };
+    } catch (err) {
+        console.warn(`Couldn't read metadata for ${filepath}:`, err);
+        return null;
+    }
+});
+
 ipcMain.handle('meow:pick-image', async () => {
     const result = await dialog.showOpenDialog({
         title: 'Choose cover image',
         properties: ['openFile'],
-        filters: [{ name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'gif', 'webp'] }]
+        filters: [{ name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'] }]
     });
     if (result.canceled || result.filePaths.length === 0) return null;
     return result.filePaths[0];
@@ -269,6 +312,22 @@ ipcMain.handle('meow:delete-song-file', async (event, relsrc) => {
         return true;
     } catch (err) {
         console.error(`Couldn't delete song file for ${relsrc}:`, err);
+        return false;
+    }
+});
+
+ipcMain.handle('meow:delete-image-file', async (event, relsrc) => {
+    const librarypaths = await ensurelibraryfolders();
+    try {
+        const cleanrelsrc = String(relsrc || '').replace(/^\.?\/*/, '');
+        const filename = path.basename(cleanrelsrc);
+        const targetpath = path.join(librarypaths.imagesdir, filename);
+
+        if (path.dirname(targetpath) !== librarypaths.imagesdir) return false;
+        await fs.unlink(targetpath);
+        return true;
+    } catch (err) {
+        console.error(`Couldn't delete image file for ${relsrc}:`, err);
         return false;
     }
 });

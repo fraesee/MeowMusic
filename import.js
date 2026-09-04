@@ -1,6 +1,4 @@
 (function () {
-    if (!window.meowapi) return;
-
     const exts = ['mp3', 'wav', 'ogg', 'flac', 'm4a', 'aac', 'wma', 'opus'];
 
     let queue = [];
@@ -24,6 +22,16 @@
 
     function newsong(filepath, filename) {
         return { path: filepath, filename, title: noext(filename), artist: '', coverpath: null, covername: '' };
+    }
+
+    async function addmetadata(songs) {
+        await Promise.all(songs.map(async song => {
+            const metadata = await window.meowapi.readsongmetadata(song.path);
+            if (!metadata) return;
+            if (metadata.title) song.title = metadata.title;
+            if (metadata.artist) song.artist = metadata.artist;
+        }));
+        return songs;
     }
 
     const notice = document.createElement('div');
@@ -106,7 +114,7 @@
             .filter(song => song.path);
         if (candidates.length === 0) return;
 
-        await queuesongs(candidates);
+        await queuesongs(await addmetadata(candidates));
     });
 
     const addbtn = document.getElementById('btn-open-add-songs');
@@ -118,7 +126,7 @@
         const candidates = filepaths
             .map(filepath => newsong(filepath, filepath.split(/[\\/]/).pop()))
             .filter(song => issong(song.filename));
-        await queuesongs(candidates);
+        await queuesongs(await addmetadata(candidates));
     }
 
     if (addbtn) {
@@ -154,6 +162,7 @@
         }
 
         const existingset = new Set(existing.map(name => name.toLocaleLowerCase()));
+        const queuedset = new Set(queue.map(song => song.filename.toLocaleLowerCase()));
 
         const fresh = [];
         const dupes = [];
@@ -161,7 +170,7 @@
         candidates.forEach(song => {
 
             const lower = song.filename.toLocaleLowerCase();
-            if (existingset.has(lower) || seen.has(lower)) {
+            if (existingset.has(lower) || queuedset.has(lower) || seen.has(lower)) {
                 dupes.push(song.filename);
                 return;
             }
@@ -169,14 +178,21 @@
             fresh.push(song);
         });
 
-        queue = fresh;
-        skipped = dupes;
+        queue = queue.concat(fresh);
+        skipped = skipped.concat(dupes);
 
         if (queue.length === 0) {
             if (dupes.length > 0) toast(dupes);
             return;
         }
-        showdialog();
+        if (dialog.hidden) {
+            showdialog();
+        } else {
+            statusline.textContent = skipped.length > 0
+                ? `Skipped ${skipped.length} already in your library or queue.`
+                : '';
+            renderqueue();
+        }
     }
 
     const dialog = document.createElement('div');
@@ -194,6 +210,7 @@
             <div id="import-album-fields" class="import-album-fields hidden">
                 <input type="text" id="import-album-name" maxlength="80" placeholder="Album name">
                 <button type="button" id="btn-import-album-cover" class="forum-btn-sm">Choose album cover</button>
+                <img id="import-album-cover-preview" class="import-cover-preview hidden" alt="">
                 <span id="import-album-cover-name" class="import-cover-name"></span>
             </div>
 
@@ -215,6 +232,7 @@
     const albumcoverbtn = dialog.querySelector('#btn-import-album-cover');
 
     const albumcovertext = dialog.querySelector('#import-album-cover-name');
+    const albumcoverpreview = dialog.querySelector('#import-album-cover-preview');
     const reorderhint = dialog.querySelector('#import-reorder-hint');
     const queuelist = dialog.querySelector('#import-song-list');
 
@@ -234,6 +252,8 @@
         reorderhint.classList.add('hidden');
         albumnameinput.value = '';
         albumcovertext.textContent = '';
+        albumcoverpreview.removeAttribute('src');
+        albumcoverpreview.classList.add('hidden');
         statusline.textContent = skipped.length > 0
             ? `Skipped ${skipped.length} already in your library: ${skipped.join(', ')}`
             : '';
@@ -244,6 +264,7 @@
     function hidedialog() {
         dialog.hidden = true;
         queue = [];
+        skipped = [];
     }
 
     cancelbtn.addEventListener('click', () => {
@@ -264,7 +285,14 @@
         albumcover = picked;
         albumcovername = picked.split(/[\\/]/).pop();
         albumcovertext.textContent = albumcovername;
+        albumcoverpreview.src = fileurl(albumcover);
+        albumcoverpreview.classList.remove('hidden');
     });
+
+    function fileurl(filepath) {
+        const normalized = filepath.replace(/\\/g, '/');
+        return `file:///${encodeURI(normalized)}`;
+    }
 
     function renderqueue() {
         queuelist.innerHTML = '';
@@ -292,6 +320,15 @@
             filenamespan.textContent = song.filename;
             filenamespan.title = song.filename;
             item.appendChild(filenamespan);
+
+            if (song.coverpath) {
+                const coverpreview = document.createElement('img');
+                coverpreview.className = 'import-cover-preview';
+                coverpreview.src = fileurl(song.coverpath);
+                coverpreview.alt = '';
+                coverpreview.title = song.covername;
+                item.appendChild(coverpreview);
+            }
 
             const titleinput = document.createElement('input');
             titleinput.type = 'text';
@@ -331,7 +368,7 @@
             const removebtn = document.createElement('button');
             removebtn.type = 'button';
             removebtn.className = 'album-remove-song';
-            removebtn.textContent = '[x]';
+            removebtn.textContent = 'Remove';
             removebtn.addEventListener('click', () => {
                 queue = queue.filter(entry => entry.path !== song.path);
                 if (queue.length === 0) {

@@ -1,4 +1,5 @@
-//lol
+//holy block of const.
+
 const audio = document.getElementById('audio-element');
 const songtitle = document.getElementById('song-title');
 const lyricstxt = document.getElementById('lyrics-text');
@@ -42,6 +43,10 @@ const selalbumtitle = document.getElementById('selected-album-title');
 const playalbum = document.getElementById('btn-play-album');
 const loopalbum = document.getElementById('btn-loop-album');
 const renamealbum = document.getElementById('btn-rename-album');
+const albumcoverimg = document.getElementById('album-cover-image');
+const albumcoverplaceholder = document.getElementById('album-cover-placeholder');
+const albumcoverbutton = document.getElementById('btn-change-album-cover');
+const albumherometa = document.getElementById('album-hero-meta');
 const albumrenamerow = document.getElementById('album-rename-row');
 const albumrenameinput = document.getElementById('album-rename-input');
 const savealbum_rename = document.getElementById('btn-save-album-rename');
@@ -60,7 +65,6 @@ const deletesongtitle = document.getElementById('delete-song-title');
 const deletesongmessage = document.getElementById('delete-song-message');
 const canceldeletesong = document.getElementById('btn-cancel-delete-song');
 const confirmdeletesong = document.getElementById('btn-confirm-delete-song');
-const avatarimage = document.querySelectorAll('.pfp-image');
 const tracksplayed_stat = document.getElementById('stats-tracks-played');
 const listentime_stat = document.getElementById('stats-listened-time');
 const differentartist_stat = document.getElementById('stats-unique-artists');
@@ -87,7 +91,6 @@ let listeningstats = {
     songs: {}
 };
 let playlist = [];
-let artistLinks = {};
 let lastaudiotime = null;
 let replayrangeactive = false;
 let replaystart = 0;
@@ -99,6 +102,7 @@ let albumplaybackq = null;
 let currentplayingalbumsources = null;
 
 let albumlooptoggle = false;
+let loopenabled = false;
 
 const RECENT_HISTORY_LIMIT = 6;
 let recentlyplayed = [];
@@ -187,13 +191,8 @@ function addtohistory(track) {
 
 async function loadPlaylist() {
     try {
-        if (window.meowapi) {
-            await window.meowapi.ensurelibrary();
-            playlist = await window.meowapi.readplaylist();
-        } else {
-            const response = await fetch('playlist.json');
-            playlist = await response.json();
-        }
+        await window.meowapi.ensurelibrary();
+        playlist = await window.meowapi.readplaylist();
     } catch (error) {
         console.error("Couldn't load playlist.json UH OH:", error);
         playlist = [];
@@ -201,22 +200,7 @@ async function loadPlaylist() {
 }
 
 function resolvetracksrc(src) {
-    if (window.meowapi && typeof window.meowapi.resolvemediapath === 'function') {
-        return window.meowapi.resolvemediapath(src);
-    }
-    return src;
-}
-
-async function loadArtistLinks() {
-    try {
-        const response = await fetch('artistlinks.json');
-        if (response.ok) {
-            artistLinks = await response.json();
-        }
-    } catch (error) {
-        console.warn("non issue in electron app ver.:", error);
-        artistLinks = {};
-    }
+    return window.meowapi.resolvemediapath(src);
 }
 
 function loadstatsstorage() {
@@ -256,11 +240,21 @@ function getmostplayed(counts) {
 function formatelistenedtime(totalseconds) {
 
     const totalMinutes = Math.floor(totalseconds / 60);
-    const hours = Math.floor(totalMinutes / 60);
-    
+    const totalHours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
-    if (hours === 0) return `${minutes} minute${minutes === 1 ? '' : 's'}`;
-    return `${hours} hour${hours === 1 ? '' : 's'} ${minutes} minute${minutes === 1 ? '' : 's'}`;
+
+    if (totalHours === 0) return `${minutes} minute${minutes === 1 ? '' : 's'}`;
+
+    if (totalHours >= 24) {
+        const days = Math.floor(totalHours / 24);
+        const hours = totalHours % 24;
+        const parts = [`${days} day${days === 1 ? '' : 's'}`];
+        if (hours > 0) parts.push(`${hours} hour${hours === 1 ? '' : 's'}`);
+        if (minutes > 0) parts.push(`${minutes} minute${minutes === 1 ? '' : 's'}`);
+        return parts.join(' ');
+    }
+
+    return `${totalHours} hour${totalHours === 1 ? '' : 's'} ${minutes} minute${minutes === 1 ? '' : 's'}`;
 
 }
 
@@ -291,40 +285,48 @@ function recordtrackstats(track) {
     renderstats();
 }
 
-const ALBUMS_STORAGE_KEY = 'meow_albums';
-const AVATAR_STORAGE_KEY = 'meow_avatar';
 let albums = [];
 let selectedalbumid = null;
 let selectedsongsource = new Set();
 let draggedalbumsource = null;
 let pendingdeletesongsources = null;
-
-function loadalbumstorage() {
+async function loadalbums() {
     try {
-        const raw = localStorage.getItem(ALBUMS_STORAGE_KEY);
-        const saved = raw ? JSON.parse(raw) : [];
-
-        if (!Array.isArray(saved)) return [];
-        return saved.map((album, index) => ({
-            id: String(album.id || `album-${index}-${Date.now()}`),
-            name: String(album.name || 'Untitled album'),
-            songs: Array.isArray(album.songs)
-
-                ? album.songs.filter(source => typeof source === 'string')
-                : []
-        }));
+        return await window.meowapi.readalbums();
     } catch (err) {
-        console.warn("Couldn't read saved albums, starting fresh:", err);
+        console.warn("Couldn't load albums.json, starting fresh:", err);
         return [];
     }
 }
 
-function savealbumstorage() {
-    try {
-        localStorage.setItem(ALBUMS_STORAGE_KEY, JSON.stringify(albums));
-    } catch (err) {
-        console.warn("This should never happen...", err);
+function getcoverforsource(source, album) {
+    const track = playlist.find(item => item.src === source);
+    if (track && track.image) return track.image;
+    if (album && album.cover) return album.cover;
+    return null;
+}
+
+function resolvecoversrc(cover) {
+    if (!cover) return null;
+    return resolvetracksrc(cover);
+}
+
+function iscoverstillinuse(cover) {
+    if (albums.some(album => album.cover === cover)) return true;
+    if (playlist.some(track => track.image === cover)) return true;
+}
+
+async function cleanupunusedcovers(covers) {
+    const candidates = [...new Set((covers || []).filter(Boolean))];
+    for (const cover of candidates) {
+        if (!iscoverstillinuse(cover)) {
+            await window.meowapi.deleteimagefile(cover);
+        }
     }
+}
+
+function savealbumstorage() {
+    window.meowapi.writealbums(albums).catch(err => console.warn("Couldn't save albums.json:", err));
 }
 
 function getselectedalbum() {
@@ -455,6 +457,21 @@ function playalbumtrack(source, { keepAlbumQueue = false, albumSources = null } 
 
 }
 
+function renderalbumherocover(album) {
+    const coverSrc = resolvecoversrc(album ? album.cover : null);
+    if (coverSrc) {
+        albumcoverimg.src = coverSrc;
+        albumcoverimg.classList.remove('hidden');
+        albumcoverplaceholder.classList.add('hidden');
+    } else {
+        albumcoverimg.removeAttribute('src');
+        albumcoverimg.classList.add('hidden');
+        albumcoverplaceholder.classList.remove('hidden');
+    }
+    albumcoverbutton.disabled = !album;
+    resetalbumcoverbutton.disabled = !album;
+}
+
 function renderalbumplaylist() {
 
     albumplaylist.innerHTML = '';
@@ -463,6 +480,12 @@ function renderalbumplaylist() {
     playalbum.disabled = !album || album.songs.length === 0;
 
     renamealbum.disabled = !album;
+    renderalbumherocover(album);
+    if (albumherometa) {
+        albumherometa.textContent = album
+            ? `${album.songs.length} song${album.songs.length === 1 ? '' : 's'}`
+            : 'No album selected';
+    }
     closealbumrenamerow();
     if (!album || album.songs.length === 0) {
         const empty = document.createElement('li');
@@ -512,6 +535,37 @@ function renderalbumplaylist() {
 
         item.appendChild(number);
 
+        const thumbButton = document.createElement('button');
+        thumbButton.type = 'button';
+        thumbButton.className = 'album-track-thumb-btn';
+        thumbButton.title = "Set this song's cover";
+        const thumbSrc = resolvecoversrc(getcoverforsource(source, album));
+        if (thumbSrc) {
+            const thumbImg = document.createElement('img');
+            thumbImg.className = 'album-track-thumb-img';
+            thumbImg.src = thumbSrc;
+            thumbImg.alt = '';
+            thumbButton.appendChild(thumbImg);
+        } else {
+            const thumbPlaceholder = document.createElement('span');
+            thumbPlaceholder.className = 'album-track-thumb-placeholder';
+            thumbPlaceholder.textContent = '♪';
+            thumbButton.appendChild(thumbPlaceholder);
+        }
+        thumbButton.addEventListener('click', async event => {
+            event.stopPropagation();
+            const relpath = await pickandimportcover();
+            if (!relpath) return;
+            const track = playlist.find(item => item.src === source);
+            if (!track) return;
+            const oldcover = track.image;
+            track.image = relpath;
+            await window.meowapi.writeplaylist(playlist);
+            renderalbumplaylist();
+            await cleanupunusedcovers([oldcover]);
+        });
+        item.appendChild(thumbButton);
+
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'album-track-link';
@@ -525,18 +579,82 @@ function renderalbumplaylist() {
         });
         item.appendChild(button);
 
+        const editButton = document.createElement('button');
+        editButton.type = 'button';
+        editButton.className = 'album-edit-song';
+        editButton.textContent = 'Edit';
+        editButton.title = 'Edit song title and artist';
+        editButton.addEventListener('click', event => {
+            event.stopPropagation();
+            button.hidden = true;
+            editButton.hidden = true;
+            removeButton.hidden = true;
+
+            const editor = document.createElement('div');
+            editor.className = 'album-track-editor';
+
+            const titleInput = document.createElement('input');
+            titleInput.type = 'text';
+            titleInput.value = track.title;
+            titleInput.placeholder = 'Song title';
+            titleInput.setAttribute('aria-label', 'Song title');
+
+            const artistInput = document.createElement('input');
+            artistInput.type = 'text';
+            artistInput.value = track.artist || '';
+            artistInput.placeholder = 'Artist';
+            artistInput.setAttribute('aria-label', 'Artist');
+
+            const saveButton = document.createElement('button');
+            saveButton.type = 'button';
+            saveButton.className = 'album-edit-song';
+            saveButton.textContent = 'Save';
+
+            const cancelButton = document.createElement('button');
+            cancelButton.type = 'button';
+            cancelButton.className = 'album-remove-song';
+            cancelButton.textContent = 'Cancel';
+
+            saveButton.addEventListener('click', async () => {
+                const title = titleInput.value.trim();
+                if (!title) {
+                    albumactionstat.textContent = 'Song title cannot be empty.';
+                    titleInput.focus();
+                    return;
+                }
+                track.title = title;
+                track.artist = artistInput.value.trim();
+                await window.meowapi.writeplaylist(playlist);
+                renderalbumplaylist();
+                albumactionstat.textContent = 'Song details updated.';
+            });
+
+            cancelButton.addEventListener('click', () => {
+                editor.remove();
+                button.hidden = false;
+                editButton.hidden = false;
+                removeButton.hidden = false;
+            });
+
+            editor.append(artistInput, titleInput, saveButton, cancelButton);
+            item.insertBefore(editor, button);
+            titleInput.focus();
+        });
+        item.appendChild(editButton);
 
         const removeButton = document.createElement('button');
         removeButton.type = 'button';
         removeButton.className = 'album-remove-song';
-
-        removeButton.textContent = '[remove]';
-        removeButton.addEventListener('click', () => {
+        removeButton.textContent = 'Remove';
+        removeButton.title = 'Remove song from album';
+        removeButton.addEventListener('click', event => {
+            event.stopPropagation();
             album.songs = album.songs.filter(albumSource => albumSource !== source);
             savealbumstorage();
             renderalbumplaylist();
         });
         item.appendChild(removeButton);
+
         albumplaylist.appendChild(item);
     });
 }
@@ -593,6 +711,7 @@ function createalbum() {
     const album = {
         id: `album-${Date.now()}-${Math.random().toString(36).slice(2)}`,
         name,
+        cover: null,
         songs: songstoadd
     };
     albums.push(album);
@@ -687,21 +806,6 @@ function addsongs_toalbum() {
     albumactionstat.textContent = `${addedCount} song${addedCount === 1 ? '' : 's'} added to ${album.name}.`;
 }
 
-function savedavatar_apply() {
-    let savedAvatar = null;
-    try {
-        savedAvatar = localStorage.getItem(AVATAR_STORAGE_KEY);
-    } catch (err) {
-        console.warn("old feature now not important. ignore", err);
-    }
-    if (!savedAvatar) return;
-    avatarimage.forEach(image => {
-        image.src = savedAvatar;
-        image.style.display = 'block';
-        if (image.nextElementSibling) image.nextElementSibling.style.display = 'none';
-    });
-}
-
 loopalbum.addEventListener('click', () => {
     albumlooptoggle = !albumlooptoggle;
     loopalbum.classList.toggle('active', albumlooptoggle);
@@ -715,8 +819,59 @@ function savedalbumloop() {
     loopalbum.textContent = albumlooptoggle ? 'Loop Album: On' : 'Loop Album: Off';
 }
 
+const resetalbumcoverbutton = document.createElement('button');
+resetalbumcoverbutton.type = 'button';
+resetalbumcoverbutton.id = 'btn-reset-album-cover';
+resetalbumcoverbutton.className = 'forum-btn-sm';
+resetalbumcoverbutton.textContent = 'Reset cover';
+if (albumherometa) {
+    albumherometa.insertAdjacentElement('afterend', resetalbumcoverbutton);
+} else {
+    albumcoverbutton.insertAdjacentElement('afterend', resetalbumcoverbutton);
+}
 
+resetalbumcoverbutton.addEventListener('click', async () => {
+    const album = getselectedalbum();
+    if (!album) return;
 
+    const oldcovers = [album.cover];
+    album.cover = null;
+
+    album.songs.forEach(source => {
+        const track = playlist.find(item => item.src === source);
+        if (track) {
+            oldcovers.push(track.image);
+            track.image = '';
+        }
+    });
+    await window.meowapi.writeplaylist(playlist);
+
+    savealbumstorage();
+    renderalbumplaylist();
+    albumactionstat.textContent = `Reset cover for "${album.name}" and its songs.`;
+
+    await cleanupunusedcovers(oldcovers);
+});
+
+async function pickandimportcover() {
+    const filepath = await window.meowapi.pickcoverimage();
+    if (!filepath) return null;
+    const relpath = await window.meowapi.importcoverimage(filepath);
+    return relpath || null;
+}
+
+albumcoverbutton.addEventListener('click', async () => {
+    const album = getselectedalbum();
+    if (!album) return;
+    const relpath = await pickandimportcover();
+    if (!relpath) return;
+    const oldcover = album.cover;
+    album.cover = relpath;
+    savealbumstorage();
+    renderalbumplaylist();
+    albumactionstat.textContent = `Updated cover for "${album.name}".`;
+    await cleanupunusedcovers([oldcover]);
+});
 
 createalbumbutton.addEventListener('click', createalbum);
 albumnameinp.addEventListener('keydown', event => {
@@ -808,13 +963,11 @@ async function confirmdeletesongaction() {
     });
     sources.forEach(source => selectedsongsource.delete(source));
     savealbumstorage();
-    if (window.meowapi) {
-        try {
-            await window.meowapi.writeplaylist(playlist);
-            await Promise.all(sources.map(source => window.meowapi.deletesongfile(source)));
-        } catch (err) {
-            console.error("Couldn't fully delete songs???????", err);
-        }
+    try {
+        await window.meowapi.writeplaylist(playlist);
+        await Promise.all(sources.map(source => window.meowapi.deletesongfile(source)));
+    } catch (err) {
+        console.error("Couldn't fully delete songs???????", err);
     }
     renderalbums();
     closedeletesongpopup();
@@ -850,7 +1003,7 @@ function spotifysearch_URL(artist) {
 }
 
 function getartist_URL(artist) {
-    return artistLinks[artist] || spotifysearch_URL(artist);
+    return spotifysearch_URL(artist);
 }
 
 function escapehtml(str) {
@@ -902,7 +1055,8 @@ function applysavedlyrics_state() {
 
 function applysavedloop() {
     const savedLoop = localStorage.getItem('meow_loop') === 'on';
-    audio.loop = savedLoop;
+    audio.loop = false;
+    loopenabled = savedLoop;
     loopbutton.classList.toggle('active', savedLoop);
     loopbutton.textContent = savedLoop ? 'Loop: On' : 'Loop: Off';
 }
@@ -1396,10 +1550,11 @@ document.getElementById('btn-shuffle').addEventListener('click', () => {
 
 
 loopbutton.addEventListener('click', () => {
-    audio.loop = !audio.loop;
-    loopbutton.classList.toggle('active', audio.loop);
-    loopbutton.textContent = audio.loop ? 'Loop: On' : 'Loop: Off';
-    localStorage.setItem('meow_loop', audio.loop ? 'on' : 'off');
+    loopenabled = !loopenabled;
+    audio.loop = false;
+    loopbutton.classList.toggle('active', loopenabled);
+    loopbutton.textContent = loopenabled ? 'Loop: On' : 'Loop: Off';
+    localStorage.setItem('meow_loop', loopenabled ? 'on' : 'off');
 });
 
 
@@ -1673,6 +1828,8 @@ audio.addEventListener('timeupdate', () => {
             renderstats();
         }
     }
+
+
     lastaudiotime = audio.currentTime;
     if (isFinite(audio.duration) && audio.duration > 0) {
         seekbar.value = audio.currentTime;
@@ -1680,7 +1837,6 @@ audio.addEventListener('timeupdate', () => {
 });
 
 function updatediscordpresence() {
-    if (!window.meowapi) return;
     if (!currenttrack || audio.paused) {
         window.meowapi.clearpresence();
         return;
@@ -1689,6 +1845,7 @@ function updatediscordpresence() {
         title: currenttrack.title,
         artist: currenttrack.artist || '',
         position: audio.currentTime || 0
+
     });
 }
 
@@ -1704,6 +1861,7 @@ audio.addEventListener('pause', () => {
 });
 
 audio.addEventListener('error', () => {
+
     console.error('cant happen:', audio.src);
     songtitle.textContent = 'cant happen';
 });
@@ -1715,11 +1873,16 @@ seekbar.addEventListener('input', () => {
 });
 
 audio.addEventListener('ended', () => {
-    if (audio.loop) {
+    if (loopenabled) {
         recordtrackstats(currenttrack);
         lastaudiotime = 0;
+        audio.currentTime = 0;
+        audio.play().catch(error => {
+            console.error('cant happen', error);
+        });
         return;
     }
+
     if (playlist.length === 0) return;
 
     if (albumplaybackq && albumplaybackq.length > 0) {
@@ -1732,6 +1895,7 @@ audio.addEventListener('ended', () => {
         const validSources = currentplayingalbumsources.filter(source =>
             playlist.some(track => track.src === source)
         );
+
         if (validSources.length > 0) {
             albumplaybackq = validSources.slice(1);
             playalbumtrack(validSources[0], { keepAlbumQueue: true });
@@ -1751,25 +1915,29 @@ audio.addEventListener('ended', () => {
     });
 });
 
+
 (async function init() {
-    await Promise.all([loadPlaylist(), loadArtistLinks()]);
+    await loadPlaylist();
     playhistory = loadhistorystorage();
     listeningstats = loadstatsstorage();
-    albums = loadalbumstorage();
+    albums = await loadalbums();
+
     if (albums.length > 0) selectedalbumid = albums[0].id;
     renderalbums();
-    savedavatar_apply();
     renderhistory();
     renderstats();
     if (playlist.length > 0) {
         loadtrack(playlist[0], { recordHistory: false });
         songtitle.textContent = 'Now playing: Nothing right now!!';
     }
+
     applysavedtheme();
     applysavedlyrics_state();
     applysavedloop();
     applysavedvol();
     applysavedvolpanel_state();
+
+    
     apply_savedattachstate(historypanel, 'meow_history_panel');
     apply_savedattachstate(statspanel, 'meow_stats_panel');
     apply_albumattachment_state();
@@ -1779,4 +1947,64 @@ audio.addEventListener('ended', () => {
     applyrating();
     applysavedthread_rating();
     updatesidebar_layout();
+})();
+
+(function initHudSettings() {
+    const hudFab = document.getElementById('btn-hud-settings');
+    const hudPanel = document.getElementById('hud-settings-panel');
+    if (!hudFab || !hudPanel) return;
+
+    const hudLinks = [
+        { hudId: 'hud-theme-btn', targetId: 'btn-theme-toggle' },
+        { hudId: 'hud-volume-btn', targetId: 'btn-volume-toggle' },
+        { hudId: 'hud-lyrics-btn', targetId: 'btn-lyrics-toggle' },
+        { hudId: 'hud-history-btn', targetId: 'btn-history-toggle' },
+        { hudId: 'hud-stats-btn', targetId: 'btn-stats-toggle' },
+        { hudId: 'hud-albums-btn', targetId: 'btn-albums-toggle' }
+    ];
+
+    function syncHudLabels() {
+        hudLinks.forEach(({ hudId, targetId }) => {
+            const hudBtn = document.getElementById(hudId);
+            const targetBtn = document.getElementById(targetId);
+            if (hudBtn && targetBtn) {
+                hudBtn.textContent = targetBtn.textContent;
+                hudBtn.classList.toggle('active', targetBtn.classList.contains('active'));
+            }
+        });
+    }
+
+    hudLinks.forEach(({ hudId, targetId }) => {
+        const hudBtn = document.getElementById(hudId);
+        const targetBtn = document.getElementById(targetId);
+        if (hudBtn && targetBtn) {
+            hudBtn.addEventListener('click', () => {
+                targetBtn.click();
+                syncHudLabels();
+            });
+        }
+    });
+
+    function openHudPanel() {
+        syncHudLabels();
+        hudPanel.classList.remove('hidden');
+        hudFab.classList.add('active');
+        hudFab.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeHudPanel() {
+        hudPanel.classList.add('hidden');
+        hudFab.classList.remove('active');
+        hudFab.setAttribute('aria-expanded', 'false');
+    }
+
+    hudFab.addEventListener('click', (event) => {
+        event.stopPropagation();
+        if (hudPanel.classList.contains('hidden')) {
+            openHudPanel();
+        } else {
+            closeHudPanel();
+        }
+    });
+
 })();

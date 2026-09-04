@@ -13,16 +13,6 @@ contextBridge.exposeInMainWorld('meowapi', {
 
 
 
-
-
-
-
-
-
-
-
-
-
     async ensurelibrary() {
         cachedlibrarypaths = await ipcRenderer.invoke('meow:ensure-library');
         return cachedlibrarypaths;
@@ -36,6 +26,10 @@ contextBridge.exposeInMainWorld('meowapi', {
         return ipcRenderer.invoke('meow:pick-songs');
     },
 
+    readsongmetadata(filepath) {
+        return ipcRenderer.invoke('meow:read-song-metadata', filepath);
+    },
+
     readplaylist() {
         return ipcRenderer.invoke('meow:read-playlist');
     },
@@ -45,6 +39,14 @@ contextBridge.exposeInMainWorld('meowapi', {
         return ipcRenderer.invoke('meow:write-playlist', playlist);
     },
 
+    readalbums() {
+        return ipcRenderer.invoke('meow:read-albums');
+    },
+
+    writealbums(albums) {
+        return ipcRenderer.invoke('meow:write-albums', albums);
+    },
+
     importsongs(filepaths) {
         return ipcRenderer.invoke('meow:import-songs', filepaths);
     },
@@ -52,6 +54,10 @@ contextBridge.exposeInMainWorld('meowapi', {
 
     deletesongfile(relsrc) {
         return ipcRenderer.invoke('meow:delete-song-file', relsrc);
+    },
+
+    deleteimagefile(relsrc) {
+        return ipcRenderer.invoke('meow:delete-image-file', relsrc);
     },
 
     updatepresence(info) {
@@ -66,14 +72,11 @@ contextBridge.exposeInMainWorld('meowapi', {
         return ipcRenderer.invoke('meow:pick-image');
     },
 
-//do i even need cover images anymore?
     importcoverimage(filepath) {
         return ipcRenderer.invoke('meow:import-image', filepath);
     },
 
 
-
-    //copied
     resolvemediapath(relpath) {
         if (!relpath || !cachedlibrarypaths) return relpath;
         const cleanrelpath = relpath.startsWith('./') ? relpath.slice(2) : relpath;
