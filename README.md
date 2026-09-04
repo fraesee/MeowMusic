@@ -3,7 +3,7 @@
 A local music player built to look like an old forum. I did this for fun, whilst I do use it over spotify I don't expect it to take off or people to actually use it.<br>
 
 ## Image showcase:
-<img width="550" height="450" alt="{F60E2CC4-400A-41BB-8A90-772FF2CC0221}" src="https://github.com/user-attachments/assets/65d0fddb-4ae7-4e82-ac6a-0d10784a2c1e" />
+<img width="550" height="450" alt="{CCFF948F-684B-4901-88F9-6139C6F63D12}" src="https://github.com/user-attachments/assets/fb9c40b5-18ee-4c5e-bbd8-9c8cee3ffe47" />
 
 ## Image/Song file extension support:
 ### Audio
