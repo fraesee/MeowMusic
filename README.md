@@ -32,9 +32,15 @@ A local music player built to look like an old forum. I did this for fun, whilst
 **L** - Toggle Lyrics attachment<br>
 **V** - Toggle Volume attachment<br>
 **X** - Toggle Replay menu<br>
+**Q** - Toggle Author sidebar<br>
+
+CTRL+- - Zoom out
+CTRL+= - Zoom in
+CTRL+0 - Reset Zoom
 
 **P** - Pause/Unpause<br>
 **R** - Restart track<br>
+**K** - Skip song<br>
 **Shift+R** - Random track<br>
 **Shift+P** - Play selected album<br>
 **Shift+L** - Toggle Loop<br>
