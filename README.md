@@ -34,9 +34,9 @@ A local music player built to look like an old forum. I did this for fun, whilst
 **X** - Toggle Replay menu<br>
 **Q** - Toggle Author sidebar<br>
 
-CTRL+- - Zoom out
-CTRL+= - Zoom in
-CTRL+0 - Reset Zoom
+CTRL+- - Zoom out<br>
+CTRL+= - Zoom in<br>
+CTRL+0 - Reset zoom<br>
 
 **P** - Pause/Unpause<br>
 **R** - Restart track<br>
